@@ -1,0 +1,62 @@
+org: yourOrg
+app: aws-node-http-api-project
+service: aws-node-http-api-project
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - arn:aws:dynamodb:us-east-1:12345678:table/KaamKaro
+
+functions:
+  hello:
+    handler: src/hello.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+  kaamBharo:
+    handler: src/kaamBharo.handler
+    events:
+      - httpApi:
+          path: /InsertTask
+          method: post
+  kaamDikhao:
+    handler: src/kaamDikhao.handler
+    events:
+      - httpApi:
+          path: /show
+          method: get
+  kaamKhatamKaro:
+    handler: src/kaamKhatamKaro.handler
+    events:
+      - httpApi:
+          path: /updateSTS/{id}
+          method: put
+
+  kaamHatao:
+    handler: src/kaamHatao.handler
+    events:
+      - httpApi:
+          path: /TaskDel/{id}
+          method: post
+
+resources:
+  Resources:
+    KaamKaro:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: KaamKaro
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
